@@ -58,7 +58,7 @@ app.MapPost("/orders", async (CreateOrderDTO orderDTO, DatabaseContext db) =>
     return Results.Ok($"Order placed for {orderDTO.Name}");
 });
 
-app.MapPatch("/orders/cancel/{name}", async (string name, DatabaseContext db) =>
+app.MapDelete("/orders/cancel/{name}", async (string name, DatabaseContext db) =>
 {
     var order = await db.Orders.Where(o => o.Name == name).FirstOrDefaultAsync();
     if (order is null) return Results.NotFound("Order not found");
@@ -72,7 +72,7 @@ app.MapPatch("/orders/cancel/{name}", async (string name, DatabaseContext db) =>
     return Results.Ok($"Order has been cancelled: {name}");
 });
 
-app.MapPatch("/orders/return/{name}", async (string name, DatabaseContext db) => {
+app.MapDelete("/orders/return/{name}", async (string name, DatabaseContext db) => {
     var order = await db.Orders.Where(o => o.Name == name).FirstOrDefaultAsync();
     if (order is null) return Results.NotFound("Order not found");
     if (order.Status == OrderStatus.Placed)
