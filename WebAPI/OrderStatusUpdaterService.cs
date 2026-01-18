@@ -24,7 +24,7 @@ namespace WebAPI
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-                    var now = DateTime.Now;
+                    var now = DateTime.UtcNow;
                     var ordersToUpdate = await db.Orders
                         .Where(o => o.Status == OrderStatus.Placed && o.DeliveryDate <= now)
                         .ToListAsync(stoppingToken);
@@ -32,7 +32,7 @@ namespace WebAPI
                     foreach(var order in ordersToUpdate)
                     {
                         order.Status = OrderStatus.Delivered;
-                        db.Orders.Update(order);
+
                     }
 
                     if (ordersToUpdate.Count > 0)
