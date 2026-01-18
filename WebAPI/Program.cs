@@ -18,7 +18,21 @@ builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlite(conn
 
 builder.Services.AddHostedService<OrderStatusUpdaterService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "FrontendPolicy",
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:3000",
+                                              "https://www.chemkart.raceintel.cloud")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                      });
+});
+
 var app = builder.Build();
+
+app.UseCors("FrontendPolicy");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -72,7 +86,8 @@ app.MapDelete("/orders/cancel/{name}", async (string name, DatabaseContext db) =
     return Results.Ok($"Order has been cancelled: {name}");
 });
 
-app.MapDelete("/orders/return/{name}", async (string name, DatabaseContext db) => {
+app.MapDelete("/orders/return/{name}", async (string name, DatabaseContext db) =>
+{
     var order = await db.Orders.Where(o => o.Name == name).FirstOrDefaultAsync();
     if (order is null) return Results.NotFound("Order not found");
     if (order.Status == OrderStatus.Placed)
