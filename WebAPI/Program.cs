@@ -50,7 +50,7 @@ app.MapPost("/orders", async (CreateOrderDTO orderDTO, DatabaseContext db) =>
         Id = Guid.NewGuid(),
         Name = orderDTO.Name,
         Price = orderDTO.Price,
-        DeliveryDate = DateTime.Now.AddDays(5),
+        DeliveryDate = DateTime.UtcNow.AddDays(5),
         Status = OrderStatus.Placed
     };
     db.Orders.Add(newOrder);
@@ -77,7 +77,7 @@ app.MapDelete("/orders/return/{name}", async (string name, DatabaseContext db) =
     if (order is null) return Results.NotFound("Order not found");
     if (order.Status == OrderStatus.Placed)
     {
-        return Results.BadRequest("Order cannot be returned");
+        return Results.BadRequest("Order cannot be returned as it has not been delivered yet");
     }
     db.Orders.Remove(order);
 
