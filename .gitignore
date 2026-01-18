@@ -1,0 +1,7 @@
+.vscode
+/WebAPI/bin/
+/WebAPI/obj/
+/WebAPI/properties/
+/WebAPI/appsettings.Development.json
+/WebAPI/appsettings.json
+/WebAPI/ordersDB.db
